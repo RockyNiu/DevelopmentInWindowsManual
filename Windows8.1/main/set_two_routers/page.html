@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>set_two_routers</title>
+</head><body>1) 设置Router A<br/>
+Modem &nbsp;-&gt; &nbsp;(Wan) Router A (Lan) -&gt; Computer<br/>
+IP: 192.168.0.1<br/>
+子网掩码: 255.255.255.0<br/>
+WAN: 自动<br/>
+DHCP 启用<br/>
+设定 静态IP 192.168.0.2 for Router B , 填Rooter B 的MAC地址<br/>
+<br/>
+2) 设置Router B<br/>
+Modem &nbsp;-&gt; &nbsp;(Wan) Router A (Lan) -&gt; (Wan) Router B (Lan) -&gt; Computer<br/>
+IP: 192.168.1.1<br/>
+子网掩码: 255.255.255.0<br/>
+WAN IP: 192.168.0.2<br/>
+DHCP 启用</body></html>
