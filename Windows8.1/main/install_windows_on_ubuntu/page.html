@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>install_windows_on_ubuntu</title>
+</head><body>http://jingyan.baidu.com/article/e75aca85ae172f142edac62d.html<br/>
+<br/>
+After install Windows on Ubuntu, there is an error missing operation system<br/>
+<br/>
+using live-usb or live-cd log in Ubuntu<br/>
+$ sudo su # get super access<br/>
+$ sudo fdisk -l &nbsp; # find where is ubuntu installed, in my case /dev/sda1 <br/>
+$ mount /dev/sda1 /mnt<br/>
+$ grub-install --root-directory=/mnt /dev/sda<br/>
+restart<br/>
+the add Windows option <br/>
+$ sudo apt-get install grub2<br/>
+$ sudo update-grub2 <br/>
+</body></html>

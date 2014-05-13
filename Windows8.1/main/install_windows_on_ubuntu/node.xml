@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+<version>6</version>
+<dict>
+  <key>title</key><string>install_windows_on_ubuntu</string>
+  <key>nodeid</key><string>8a805bd4-38c1-40d4-980d-504e6fa3e65c</string>
+  <key>modified_time</key><integer>1399955111</integer>
+  <key>version</key><integer>6</integer>
+  <key>content_type</key><string>text/xhtml+xml</string>
+  <key>created_time</key><integer>1399954854</integer>
+  <key>order</key><integer>1</integer>
+</dict>
+</node>
