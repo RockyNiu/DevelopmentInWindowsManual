@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Diff-with-JS</title>
+</head><body>1) Enum <br/>
+<br/>
+A helpful addition to the standard set of datatypes from JavaScript is the 'enum'. Like languages like C#, an enum is a way of giving more friendly names to sets of numeric values.<br/>
+<br/>
+enum Color {Red, Green, Blue}; <br/>
+var c: Color = Color.Green; <br/>
+<br/>
+By default, enums begin numbering their members starting at 0. You can change this by manually setting the value of one its members. For example, we can start the previous example at 1 instead of 0:<br/>
+<br/>
+enum Color {Red = 1, Green, Blue}; <br/>
+var c: Color = Color.Green; <br/>
+<br/>
+Or, even manually set all the values in the enum:<br/>
+<br/>
+enum Color {Red = 1, Green = 2, Blue = 4}; <br/>
+var c: Color = Color.Green; <br/>
+<br/>
+A handy feature of enums is that you can also go from a numeric value to the name of that value in the enum. For example, if we had the value 2 but weren't sure which that mapped to in the Color enum above, we could look up the corresponding name:<br/>
+<br/>
+enum Color {Red = 1, Green, Blue}; <br/>
+var colorName: string = Color[2]; <br/>
+alert(colorName); &nbsp; <br/>
+<br/>
+2) Any <br/>
+We may need to describe the type of variables that we may not know when we are writing the application. These values may come from dynamic content, eg from the user or 3rd party library. In these cases, we want to opt-out of type-checking and let the values pass through compile-time checks. To do so, we label these with the 'any' type:<br/>
+<br/>
+var notSure: any = 4; <br/>
+notSure = <span style="color: #a31515">"maybe a string instead"</span>; <br/>
+notSure = false; // okay, definitely a boolean <br/>
+<br/>
+The 'any' type is a powerful way to work with existing JavaScript, allowing you to gradually opt-in and opt-out of type-checking during compilation.<br/>
+<br/>
+The 'any' type is also handy if you know some part of the type, but perhaps not all of it. For example, you may have an array but the array has a mix of different types:<br/>
+<br/>
+var list:any[] = [1, true, <span style="color: #a31515">"free"</span>]; <br/>
+list[1] = 100; &nbsp; <br/>
+<br/>
+3) Void <br/>
+Perhaps the opposite in some ways to 'any' is 'void', the absence of having any type at all. You may commonly see this as the return type of functions that do not return a value:<br/>
+<br/>
+function warnUser(): void { <br/>
+&nbsp; alert(<span style="color: #a31515">"This is my warning message"</span>); <br/>
+} &nbsp; <br/>
+<br/>
+4.1) Optional Interface<br/>
+<br/>
+interface SquareConfig { color?: string; width?: number; } <br/>
+<br/>
+function createSquare(config: SquareConfig): {color: string; area: number}<br/>
+{ &nbsp; var newSquare = {color: <span style="color: #a31515">"white"</span>, area: 100}; <br/>
+&nbsp; &nbsp; if (config.color) { newSquare.color = config.color; } <br/>
+&nbsp; &nbsp; if (config.width) { newSquare.area = config.width * config.width; } <br/>
+&nbsp; &nbsp; return newSquare; <br/>
+} <br/>
+<br/>
+var mySquare = createSquare({color: <span style="color: #a31515">"black"</span>}); &nbsp;<br/>
+<br/>
+4.2) Function Type of Interface<br/>
+<br/>
+interface SearchFunc { (source: string, subString: string): boolean; } &nbsp;<br/>
+<br/>
+var mySearch: SearchFunc; <br/>
+<br/>
+mySearch = function(src: string, sub: string) <br/>
+{ <br/>
+&nbsp; var result = source.search(subString); <br/>
+&nbsp; if (result == -1) <br/>
+&nbsp; &nbsp; { return false; } <br/>
+&nbsp; else <br/>
+&nbsp; &nbsp; { return true; } <br/>
+} &nbsp;<br/>
+<br/>
+4.3) Array Type of Interface<br/>
+<br/>
+interface StringArray { [index: number]: string; } <br/>
+var myArray: StringArray; myArray = [<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Fred"</span>]; &nbsp;<br/>
+<br/>
+There are two types of supported index types: string and number. It is possible to support both types of index, with the restriction that the type returned from the numeric index must be a subtype of the type returned from the string index.<br/>
+<br/>
+While index signatures are a powerful way to describe the array and 'dictionary' pattern, they also enforce that all properties match their return type. In this example, the property does not match the more general index, and the type-checker gives an error:<br/>
+<br/>
+interface Dictionary { [index: string]: string; length: number; // error, the type of 'length' is not a subtype of the indexer } &nbsp; <br/>
+<br/>
+4.4) Class Type of Interface<br/>
+<br/>
+interface ClockInterface { currentTime: Date; setTime(d: Date); } <br/>
+<br/>
+class Clock implements ClockInterface<br/>
+&nbsp;{<br/>
+&nbsp;currentTime: Date; <br/>
+setTime(d: Date) { this.currentTime = d; } <br/>
+constructor(h: number, m: number) { } <br/>
+} <br/>
+<br/>
+Interfaces describe the public side of the class, rather than both the public and private side. This prohibits you from using them to check that a class also has particular types for the private side of the class instance. &nbsp;<br/>
+<br/>
+you would need to work with the 'static' side of the class directly. In this example, we work with the class directly:<br/>
+<br/>
+interface ClockStatic { new (hour: number, minute: number); } <br/>
+<br/>
+class Clock { currentTime: Date; constructor(h: number, m: number) { } } <br/>
+var cs: ClockStatic = Clock; <br/>
+var newClock = new cs(7, 30); &nbsp; <br/>
+<br/>
+4.5) Extending Interface<br/>
+An interface can extend multiple interfaces, creating a combination of all of the interfaces.<br/>
+<br/>
+interface Shape { color: string; } <br/>
+interface PenStroke { penWidth: number; }<br/>
+interface Square extends Shape, PenStroke { sideLength: number; } <br/>
+var square: Square; <br/>
+square.color = <span style="color: #a31515">"blue"</span>; <br/>
+square.sideLength = 10; <br/>
+square.penWidth = 5.0; &nbsp; <br/>
+<br/>
+4.6) Hybrid Type of Interface<br/>
+interface Counter { (start: number): string; interval: number; reset(): void; } <br/>
+var c: Counter; <br/>
+c(10); <br/>
+c.reset(); <br/>
+c.interval = 5.0; &nbsp;<br/>
+<br/>
+5.1) compatiable class<br/>
+class Animal { private name:string; constructor(theName: string) { this.name = theName; } } <br/>
+<br/>
+class Rhino extends Animal { constructor() { super(<span style="color: #a31515">"Rhino"</span>); } } <br/>
+<br/>
+class Employee { private name:string; constructor(theName: string) { this.name = theName; } } <br/>
+<br/>
+var animal = new Animal(<span style="color: #a31515">"Goat"</span>); <br/>
+var rhino = new Rhino(); <br/>
+var employee = new Employee(<span style="color: #a31515">"Bob"</span>); <br/>
+<br/>
+animal = rhino; <br/>
+animal = employee; //error: Animal and Employee are not compatible &nbsp;<br/>
+<br/>
+5.2) Accessors of Class<br/>
+var passcode = <span style="color: #a31515">"secret passcode"</span>; <br/>
+<br/>
+class Employee <br/>
+{ private _fullName: string; <br/>
+get fullName(): string { return this._fullName; } <br/>
+set fullName(newName: string) { if (passcode &amp;&amp; passcode == <span style="color: #a31515">"secret passcode"</span>) { this._fullName = newName; } else { alert(<span style="color: #a31515">"Error: Unauthorized update of employee!"</span>); } } <br/>
+} <br/>
+<br/>
+var employee = new Employee(); <br/>
+employee.fullName = <span style="color: #a31515">"Bob Smith"</span>; <br/>
+if (employee.fullName) { alert(employee.fullName); } &nbsp;<br/>
+<br/>
+5.3) static <br/>
+class Grid <br/>
+{ <br/>
+static origin = {x: 0, y: 0}; <br/>
+calculateDistanceFromOrigin(point: {x: number; y: number;}) { var xDist = (point.x - <span style="color: #ff0000">Grid</span>.origin.x); var yDist = (point.y - <span style="color: #ff0000">Grid</span>.origin.y); return Math.sqrt(xDist * xDist + yDist * yDist) / this.scale; } &nbsp;// <span style="color: #ff0000">Grid, not this</span><br/>
+constructor (public scale: number) { } <br/>
+} <br/>
+var grid1 = new Grid(1.0); // 1x scale <br/>
+var grid2 = new Grid(5.0); // 5x scale <br/>
+alert(grid1.calculateDistanceFromOrigin({x: 10, y: 10})); <br/>
+alert(grid2.calculateDistanceFromOrigin({x: 10, y: 10})); &nbsp;<br/>
+<br/>
+6.1) Function parameters should match<br/>
+function buildName(firstName: string, lastName: string) { return firstName + <span style="color: #a31515">" "</span>&nbsp;+ lastName; } <br/>
+var result1 = buildName(<span style="color: #a31515">"Bob"</span>); //error, too few parameters <br/>
+var result2 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>, <span style="color: #a31515">"Sr."</span>); //error, too many parameters <br/>
+var result3 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>); //ah, just right &nbsp; <br/>
+<br/>
+function buildName(firstName: string, lastName<span style="color: #ff0000">?</span>: string) { if (lastName) return firstName + <span style="color: #a31515">" "</span>&nbsp;+ lastName; else return firstName; } <br/>
+var result1 = buildName(<span style="color: #a31515">"Bob"</span>); //works correctly now <br/>
+var result2 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>, <span style="color: #a31515">"Sr."</span>); //error, too many parameters <br/>
+var result3 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>); //ah, just right &nbsp;<br/>
+<br/>
+function buildName(firstName: string, lastName = <span style="color: #a31515">"Smith"</span>) { return firstName + <span style="color: #a31515">" "</span>&nbsp;+ lastName; } <br/>
+var result1 = buildName(<span style="color: #a31515">"Bob"</span>); //works correctly now, also <br/>
+var result2 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>, <span style="color: #a31515">"Sr."</span>); //error, too many parameters <br/>
+var result3 = buildName(<span style="color: #a31515">"Bob"</span>, <span style="color: #a31515">"Adams"</span>); //ah, just right &nbsp;<br/>
+<br/>
+6.2) Rest Parameters of Function<br/>
+function buildName(firstName: string, ...restOfName: string[]) { return firstName + <span style="color: #a31515">" "</span>&nbsp;+ restOfName.join(<span style="color: #a31515">" "</span>); } <br/>
+var employeeName = buildName(<span style="color: #a31515">"Joseph"</span>, <span style="color: #a31515">"Samuel"</span>, <span style="color: #a31515">"Lucas"</span>, <span style="color: #a31515">"MacKinzie"</span>); <br/>
+<br/>
+Rest parameters are treated as a boundless number of optional parameters. You may leave them off, or have as many as you want. The compiler will build an array of the arguments you pass to the function under the name given after the ellipsis (...), allowing you to use it in your function. <br/>
+<br/>
+The ellipsis is also used in the type of the function with rest parameters:<br/>
+<br/>
+function buildName(firstName: string, ...restOfName: string[]) { return firstName + <span style="color: #a31515">" "</span>&nbsp;+ restOfName.join(<span style="color: #a31515">" "</span>); }<br/>
+var buildNameFun: (fname: string, ...rest: string[])=&gt;string = buildName; <br/>
+<br/>
+6.3) Override of Function<br/>
+var suits = [<span style="color: #a31515">"hearts"</span>, <span style="color: #a31515">"spades"</span>, <span style="color: #a31515">"clubs"</span>, <span style="color: #a31515">"diamonds"</span>]; <br/>
+function pickCard(x: {suit: string; card: number; }[]): number; <br/>
+function pickCard(x: number): {suit: string; card: number; }; <br/>
+function pickCard(x): any { // Check to see if we're working with an object/array // if so, they gave us the deck and we'll pick the card <br/>
+<br/>
+if (typeof x == <span style="color: #a31515">"object"</span>) { var pickedCard = Math.floor(Math.random() * x.length); return pickedCard; } // Otherwise just let them pick the card else <br/>
+if (typeof x == <span style="color: #a31515">"number"</span>) { var pickedSuit = Math.floor(x / 13); return { suit: suits[pickedSuit], card: x % 13 }; } } <br/>
+<br/>
+var myDeck = [{ suit: <span style="color: #a31515">"diamonds"</span>, card: 2 }, { suit: <span style="color: #a31515">"spades"</span>, card: 10 }, { suit: <span style="color: #a31515">"hearts"</span>, card: 4 }]; <br/>
+var pickedCard1 = myDeck[pickCard(myDeck)]; <br/>
+alert(<span style="color: #a31515">"card: "</span>&nbsp;+ pickedCard1.card + <span style="color: #a31515">" of "</span>&nbsp;+ pickedCard1.suit); <br/>
+<br/>
+var pickedCard2 = pickCard(15); <br/>
+alert(<span style="color: #a31515">"card: "</span>&nbsp;+ pickedCard2.card + <span style="color: #a31515">" of "</span>&nbsp;+ pickedCard2.suit); &nbsp;<br/>
+<br/>
+7) Generics<br/>
+function identity&lt;T&gt;(arg: T): T { return arg; } &nbsp;<br/>
+var output = identity&lt;string&gt;(<span style="color: #a31515">"myString"</span>); // type of output will be 'string' &nbsp;<br/>
+var output = identity(<span style="color: #a31515">"myString"</span>); // type of output will be 'string' <br/>
+<br/>
+8) Mixin<br/>
+// Disposable Mixin <br/>
+class Disposable { isDisposed: boolean; dispose() { this.isDisposed = true; } } <br/>
+<br/>
+// Activatable Mixin <br/>
+class Activatable { isActive: boolean; activate() { this.isActive = true; } deactivate() { this.isActive = false; } } <br/>
+<br/>
+class SmartObject implements Disposable, Activatable <br/>
+{ <br/>
+constructor() { setInterval(() =&gt; console.log(this.isActive + <span style="color: #a31515">" : "</span>&nbsp;+ this.isDisposed), 500); }<br/>
+interact() { this.activate(); } <br/>
+<br/>
+// Disposable <br/>
+isDisposed: boolean = false; <br/>
+dispose: () =&gt; void; <br/>
+<br/>
+// Activatable <br/>
+isActive: boolean = false; <br/>
+activate: () =&gt; void; <br/>
+deactivate: () =&gt; void; <br/>
+} <br/>
+<br/>
+applyMixins(SmartObject, [Disposable, Activatable]); <br/>
+<br/>
+var smartObj = new SmartObject(); <br/>
+setTimeout(() =&gt; smartObj.interact(), 1000); <br/>
+<br/>
+//////////////////////////////////////// // In your runtime library somewhere //////////////////////////////////////// <br/>
+function applyMixins(derivedCtor: any, baseCtors: any[]) <br/>
+{ <br/>
+&nbsp; baseCtors.forEach(baseCtor =&gt; { <br/>
+&nbsp; &nbsp; Object.getOwnPropertyNames(baseCtor.prototype).forEach(name =&gt; { <br/>
+&nbsp; &nbsp; &nbsp; &nbsp; derivedCtor.prototype[name] = baseCtor.prototype[name]; <br/>
+&nbsp; &nbsp; }) <br/>
+&nbsp; }); <br/>
+} &nbsp;<br/>
+<br/>
+9) Declaratoin Merge<br/>
+</body></html>
